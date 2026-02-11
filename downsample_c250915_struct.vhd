@@ -237,7 +237,7 @@ BEGIN
    	if(Reset = '1') then
    		M_TVALID_b <= '0';
    	elsif rising_edge(Clk) then
-   		if(FIFO_RdEn = '1') then
+		if(dout2 = '1') then
    			M_TVALID_b <= '1';
    		else
    			M_TVALID_b <= '0';
@@ -249,7 +249,7 @@ BEGIN
    	if(Reset = '1') then
    		M_TDATA_b <= (others => '0');
    	elsif rising_edge(Clk) then
-   		if(FIFO_RdEn = '1') then
+		if(dout2 = '1') then
    			M_TDATA_b <= FIFO_Dout;
    		end if;
    	end if;
@@ -259,7 +259,7 @@ BEGIN
    	if(Reset = '1') then
    		M_SOP <= '0';
    	elsif rising_edge(Clk) then
-   		if(State_c = ST_SOP) then
+		if(State_c = ST_SOP) and (dout2 = '1') then
    			M_SOP <= '1'; 
    		else
    			M_SOP <= '0';
@@ -273,7 +273,7 @@ BEGIN
    	if(Reset = '1') then
    		M_TLAST_b <= '0';
    	elsif rising_edge(Clk) then
-   		if(State_c = ST_EOP) then
+		if(State_c = ST_EOP) and (dout2 = '1') then
    			M_TLAST_b <= '1';
    		else
    			M_TLAST_b <= '0';

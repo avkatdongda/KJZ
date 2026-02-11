@@ -89,6 +89,7 @@ BEGIN
    csm1_nextstate_proc : PROCESS ( 
       EndWaitCnt,
       FIFO_Din,
+      FIFO_Empty,
       Req,
       State_c
    )
@@ -110,7 +111,7 @@ BEGIN
                State_n <= ST_IDLE;
             END IF;
          WHEN ST_DATA => 
-            IF (FIFO_Din(16) = '1') THEN 
+            IF ((FIFO_Empty = '0') and (FIFO_Din(16) = '1')) THEN 
                State_n <= ST_ACK;
             ELSE
                State_n <= ST_DATA;
@@ -140,8 +141,13 @@ BEGIN
                Dout <= X"5CFB";
                Kout <= "11";
             when ST_DATA =>
-   				Dout <= FIFO_Din(15 downto 0);
-   				Kout <= "00";
+               if(FIFO_Empty = '0') then
+   					Dout <= FIFO_Din(15 downto 0);
+   					Kout <= "00";
+               else
+                  Dout <= X"C5BC";
+                  Kout <= "01";
+               end if;
    		 when ST_ACK  => 
    				Dout <= X"FDFE";
    				Kout <= "11";
